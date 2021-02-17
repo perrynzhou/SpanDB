@@ -1,8 +1,5 @@
 #pragma once
 
-//#include "core/workload_proxy.h"
-//#include "core/core_workload.h"
-
 #include "rocksdb/db.h"
 #include "rocksdb/table.h"
 #include "rocksdb/options.h"

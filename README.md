@@ -24,17 +24,17 @@ Compile SPDK
 
 ```
 # install dependencies
-./scripts/pkgdep.sh
+sudo ./scripts/pkgdep.sh
 # compile spdk
 ./configure --with-shared
 make
-make install
+sudo make install
 ```
 
 Once installed, please add the include path for spdk to your `CPATH` environment variable and the lib path to `LIBRARY_PATH`. E.g.,
 
 ```
-echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:$PWD/dpdk/build/lib/" >> ~/.bashrc
 ```
 
 Add dpdk environment,
@@ -107,7 +107,7 @@ git clone https://github.com/SpanDB/SpanDB.git
 cd SpanDB
 mkdir build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX:PATH=. -DWITH_TESTS=OFF -DCMAKE_BUILD_TYPE=Release -DUSE_RTTI=true
+cmake .. -DCMAKE_INSTALL_PREFIX:PATH=. -DWITH_TESTS=OFF -DCMAKE_BUILD_TYPE=Release -DUSE_RTTI=true -DFAIL_ON_WARNINGS=false
 make -j$(nproc)
 make install
 ```
@@ -119,6 +119,9 @@ make install
 
 ```
 cd SpanDB/ycsb
+mkdir build
+cd build
+cmake ../
 make
 ```
 
@@ -139,7 +142,7 @@ The `test` needs 7 parameters, `<workload_file> <client_num> <data_dir> <log_dir
 **Generate DB**
 
 ```
-./test workloads/microbench.spec 40 $DATA_PATA $LOG_PATA 1 rocksdb $BASE_DB_PATH
+./test $WORKLOAD_PATH 40 $DATA_PATA $LOG_PATA 1 rocksdb $BASE_DB_PATH
 ```
 
 **Test**
@@ -148,7 +151,7 @@ The `test` needs 7 parameters, `<workload_file> <client_num> <data_dir> <log_dir
 RocksDB:
 
 ```
-./test workloads/microbench.spec 40 $DATA_PATA $LOG_PATA 0 rocksdb $BASE_DB_PATH
+./test $WORKLOAD_PATH 40 $DATA_PATA $LOG_PATA 0 rocksdb $BASE_DB_PATH
 ```
 
 SpanDB:
@@ -156,7 +159,7 @@ SpanDB:
 ```
 sudo su root
 ulimit -n 100000
-./test workloads/microbench.spec 8 $DATA_PATA $LOG_PATA $PCIE_ADDR 0 spandb $BASE_DB_PATH
+./test $WORKLOAD_PATH 8 $DATA_PATA $LOG_PATA $PCIE_ADDR 0 spandb $BASE_DB_PATH
 ```
 
 Note: The TopFS also has a cache, and the cache size is defined as `SPDK_MEM_POOL_SIZE` in `io_spdk.h`. Please make sure the hugepages size is bigger than this.

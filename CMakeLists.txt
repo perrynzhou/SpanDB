@@ -34,6 +34,8 @@
 
 cmake_minimum_required(VERSION 3.5.1)
 
+
+set(CMAKE_INSTALL_LIBDIR lib64)
 option(SPANDB_STAT "SpanDB statistics" OFF)
 if(SPANDB_STAT)
   add_definitions(-DSPANDB_STAT)
