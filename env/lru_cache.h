@@ -25,9 +25,6 @@
 #include <thread>
 #include <vector>
 
-// LIRS
-// a-->b-->c
-
 namespace tstarling {
 
 /**
@@ -174,11 +171,12 @@ class ConcurrentLRUCache {
 
   void delete_key(const TKey& key);
 
-  /**
+    /**
    * Evict the least-recently used item from the container. This function does
    * its own locking.
    */
-  void evict();
+  void evict_key();
+
 
  private:
   /**
@@ -192,6 +190,12 @@ class ConcurrentLRUCache {
    * must lock the list mutex while this is called.
    */
   void pushFront(ListNode* node);
+
+  /**
+   * Evict the least-recently used item from the container. This function does
+   * its own locking.
+   */
+  void evict();
 
   /**
    * The maximum number of elements in the container.
@@ -388,6 +392,28 @@ void ConcurrentLRUCache<TKey, TValue, THash>::evict() {
 }
 
 template <class TKey, class TValue, class THash>
+void ConcurrentLRUCache<TKey, TValue, THash>::evict_key() {
+  // __sync_fetch_and_add(&evict_num, 1);
+  std::unique_lock<ListMutex> lock(m_listMutex);
+  ListNode* moribund = m_tail.m_prev;
+  if (moribund == &m_head) {
+    // List is empty, can't evict
+    return;
+  }
+  delink(moribund);
+  lock.unlock();
+  m_size--;
+
+  HashMapAccessor hashAccessor;
+  if (!m_map.find(hashAccessor, moribund->m_key)) {
+    // Presumably unreachable
+    return;
+  }
+  m_map.erase(hashAccessor);
+  delete moribund;
+}
+
+template <class TKey, class TValue, class THash>
 void ConcurrentLRUCache<TKey, TValue, THash>::delete_key(const TKey& key) {
   // __sync_fetch_and_add(&delete_num, 1);
   HashMapConstAccessor hashAccessor;
@@ -405,6 +431,7 @@ void ConcurrentLRUCache<TKey, TValue, THash>::delete_key(const TKey& key) {
 
   m_map.erase(hashAccessor);
   delete node;
+  m_size--;
 }
 
 }  // namespace tstarling

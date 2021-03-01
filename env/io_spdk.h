@@ -742,7 +742,9 @@ class SpdkFile {
         }
 
         SPDKRead(sp_info_, buffer);
+#ifdef SPANDB_STAT
         auto sss = SPDK_TIME;
+#endif
         while (!buffer->readable_) {
           CheckComplete(sp_info_, buffer->queue_id_);
         }
