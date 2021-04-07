@@ -168,6 +168,6 @@ Note: The TopFS also has a cache, and the cache size is defined as `SPDK_MEM_POO
 
 ## 3. Papers
 
-Hao Chen, Chaoyi Ruan, Cheng Li, Xiaosong Ma, Yinlong Xu. *SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage*. In Proceedings of FAST'21: 19th USENIX Conference on File and Storage Technologies (FAST'2021). [[Paper]](https://www.usenix.org/conference/fast21/presentation/chen-hao)
+Hao Chen, Chaoyi Ruan, Cheng Li, Xiaosong Ma, Yinlong Xu. *SpanDB: A Fast, Cost-Effective LSM-tree Based KV Store on Hybrid Storage*. In Proceedings of FAST'21: 19th USENIX Conference on File and Storage Technologies (FAST'2021). [[Paper](https://www.usenix.org/conference/fast21/presentation/chen-hao)]
 
 
